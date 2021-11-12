@@ -13,6 +13,7 @@ struct GeneralSettingsView: View {
     @ObservedObject private var atLogin = LaunchAtLogin.observable
     @Default(.betaChannel) var betaChannel
     @Default(.showBeta) var showBeta
+    @Default(.setappEmail) var appEmail
 
     var body: some View {
         Form {
@@ -22,7 +23,28 @@ struct GeneralSettingsView: View {
                         Toggle("Automatically launch on system startup", isOn: $atLogin.isEnabled)
                     }
                 }
-
+            #if SETAPP_ENABLED
+                let setappEmail = Binding<Bool>(
+                    get: {
+                        SCGetLastUserEmailSharingResponse() == .askLater || appEmail
+                    },
+                    set: {
+                        print($0)
+                        SCAskUserToShareEmail { (res: SCUserEmailSharingResponse) in
+                            if res != .askLater  {
+                                appEmail = true
+                            }
+                            
+                        }
+                    }
+                )
+                Section(
+                    footer: Text("Receive occasional personalized email notifications ").font(.footnote)) {
+                        VStack(alignment: .leading) {
+                            Toggle("Subscribe me to a newsletter", isOn: setappEmail).disabled(appEmail)
+                        }
+                    }
+            #endif
             if showBeta {
                 Section(
                     footer: Text("Latest features but potentially bugs to report.").font(.footnote)) {

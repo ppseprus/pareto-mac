@@ -33,6 +33,7 @@ extension Defaults.Keys {
     // Updates
     static let updateNag = Key<Bool>("updateNag", default: false)
     static let showBeta = Key<Bool>("showBeta", default: false)
+    static let setappEmail = Key<Bool>("setappEmail", default: false)
     static let betaChannel = Key<Bool>("betaChannel", default: false)
     static let lastUpdateCheck = Key<Int>("lastUpdateCheck", default: Date().currentTimeMillis())
 
